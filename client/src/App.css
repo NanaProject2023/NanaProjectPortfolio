@@ -1,0 +1,282 @@
+body {
+  font-family: Arial;
+  background: #f4f4f4;
+}
+
+.container {
+  width: 500px;
+  margin: auto;
+  padding: 20px;
+  background: white;
+  border-radius: 8px;
+  margin-top: 60px;
+  border: 1px solid blue;
+}
+
+.summary {
+  margin-bottom: 20px;
+}
+
+.form input,
+.form select {
+  margin: 5px;
+  padding: 8px;
+}
+
+button {
+  padding: 8px 20px;
+  cursor: pointer;
+}
+
+ul button {
+
+padding: 8px 8px;
+border-radius: 20px;
+color: red;
+background-color: rgb(177, 206, 219);
+margin-left: 80px;
+}
+
+.expense-form {
+  display: flex;
+  flex-direction: column; /* stack fields and buttons vertically */
+  gap: 10px;
+}
+
+.action-buttons {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: flex;          /* make li items in a row */
+  justify-content: flex-end; /* push buttons to the right */
+  gap: 10px;              /* space between buttons */
+}
+
+.action-buttons li {
+  margin: 0;
+}
+
+
+
+
+
+
+ul {
+  list-style-type: none; /* Removes default bullets */
+  padding: 0; /* Removes default padding */
+  margin: 0; /* Removes default margins */
+  width: 100%; /* Optional: ensures the list takes up available width */
+}
+
+.list-item {
+  display: flex; /* Makes the li a flex container */
+  justify-content: space-between; /* Pushes content and button to opposite ends */
+  align-items: center; /* Vertically centers items */
+  padding: 10px; /* Adds some spacing inside the list item */
+  border-bottom: 1px solid #ccc; /* Optional: adds a separator line */
+}
+
+.deldel {
+
+  color: rgb(209, 40, 40);
+  border: none;
+  padding: 6px 9px;
+  cursor: pointer;
+}
+
+.deldel:hover {
+  background-color: #282951;
+  color: white;
+  transform: translateY(-2px);
+  transition: ease-in 0.4s;
+}
+
+.summary {
+  display: grid; /* Makes the li a flex container */
+
+  justify-content: space-between; /* Pushes content and button to opposite ends */
+  /* align-items: center;  Vertically centers items */
+  padding: 10px; /* Adds some spacing inside the list item */
+  border-bottom: 1px solid #ccc; /* Optional: adds a separator line */
+}
+
+
+
+
+
+
+
+
+/* Default (Light Mode) */
+.app {
+  background-color: #f4f4f4;
+  color: #222;
+  padding: 20px;
+  transition: all 0.3s ease;
+  margin-bottom: 20px;
+  margin-top: 20px;
+  border-radius: 15px;
+  
+}
+
+/* Dark Mode */
+.app.dark {
+  background-color: #827474;
+  color: #bddae8;
+}
+
+/* Button styling */
+.toggle-btn {
+  padding: 5px 14px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 15px;
+  font-weight: bold;
+}
+
+.app.dark .toggle-btn {
+  background-color: #f6f1f1;
+  color: rgb(38, 36, 36);
+}
+
+.app .toggle-btn {
+  background-color: #493f3f;
+  color: rgb(225, 218, 218);
+}
+
+.app-title{
+
+text-align: center;
+font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+color: rgb(4, 4, 111);
+
+}
+
+.summary h3{
+
+ font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+ font-size: 21px;
+
+}
+#income{
+  color: green;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+#expenses{
+
+  color: red;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+}
+.form input{
+  background-color: rgba(192, 210, 223, 0.921);
+  border: none;
+  border-radius: 15px;
+  color: rgb(191, 124, 15);
+  
+
+  
+  
+}
+.form select{
+  background-color: red;
+  color: white;
+   
+  
+  
+}
+.form button{
+  border-radius: 15px;
+  padding: 5px 27px;
+  color: rgb(237, 237, 245);
+  border: none;
+  background-color: rgb(14, 14, 105);
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 15px;
+}
+#expense-tracker{
+
+  text-align: center;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  color: rgb(11, 11, 105);
+}
+
+
+
+
+
+
+
+.auth-container {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f4f6f8;
+  font-family: Arial, sans-serif;
+}
+
+.auth-container h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #5e96d6e1;
+}
+
+.auth-container input {
+  width: 280px;
+  padding: 12px;
+  margin: 8px 0;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 14px;
+  transition: 0.2s ease;
+}
+
+.auth-container input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 5px rgba(74, 144, 226, 0.3);
+}
+
+.auth-container button {
+  width: 280px;
+  padding: 12px;
+  margin-top: 12px;
+  background: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.auth-container button:hover {
+  background: #357abd;
+}
+
+.auth-container p {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+}
+
+.auth-container p:hover {
+  text-decoration: underline;
+}
+
+#logout-button{
+
+  border-radius: 25px;
+  border: none;
+  padding: 5px 100px;
+  margin-left: 120px;
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  font-size: 18px;
+  background-color: #282951;
+  color: rgb(247, 244, 244);
+}
