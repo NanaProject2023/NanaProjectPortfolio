@@ -99,7 +99,7 @@ const authenticateToken = (req, res, next) => {
 
 
 app.get("/", (req, res) => {
-  res.send("API is running");
+  res.send("API is running, dont forget to delete after testing");
 });
 
 
