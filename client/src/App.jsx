@@ -25,8 +25,8 @@ const [isLogin, setIsLogin] = useState(true);
 const handleAuth = async () => {
   try {
     const url = isLogin
-      ? "http://localhost:5000/login"
-      : "http://localhost:5000/signup";
+      ? "https://nanaprojectportfolio.onrender.com/login"
+      : "https://nanaprojectportfolio.onrender.com/signup";
 
     const res = await axios.post(url, { email, password });
 
@@ -54,7 +54,7 @@ const handleAuth = async () => {
   }, [token]);
 
 const fetchTransactions = async () => {
-  const res = await axios.get("http://localhost:5000/transactions", {
+  const res = await axios.get("https://nanaprojectportfolio.onrender.com/transactions", {
     headers: { Authorization: `Bearer ${token}` },
   });
   setTransactions(res.data);
@@ -62,7 +62,7 @@ const fetchTransactions = async () => {
 
 const addTransaction = async () => {
   await axios.post(
-    "http://localhost:5000/transactions",
+    "https://nanaprojectportfolio.onrender.com/transactions",
     { description, amount, type },
     { headers: { Authorization: `Bearer ${token}` } }
     
@@ -75,7 +75,7 @@ const addTransaction = async () => {
 };
 
 const deleteTransaction = async (id) => {
-  await axios.delete(`http://localhost:5000/transactions/${id}`, {
+  await axios.delete(`https://nanaprojectportfolio.onrender.com/transactions/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   fetchTransactions();
