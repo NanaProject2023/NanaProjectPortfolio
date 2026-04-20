@@ -54,14 +54,23 @@ const handleAuth = async () => {
   }, [token]);
 
 const fetchTransactions = async () => {
-  const res = await axios.get("https://nanaprojectportfolio.onrender.com/transactions", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  setTransactions(res.data);
+  try {
+    const res = await axios.get(
+      "https://nanaprojectportfolio.onrender.com/transactions",
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    setTransactions(res.data);
+  } catch (err) {
+    console.error("FETCH ERROR:", err);
+  }
 };
 
+
 const addTransaction = async () => {
-  await axios.post(
+  try{
+  const res = await axios.post(
     "https://nanaprojectportfolio.onrender.com/transactions",
     { description, amount, type },
     { headers: { Authorization: `Bearer ${token}` } }
@@ -72,13 +81,20 @@ const addTransaction = async () => {
   setType("expense"); 
 
   fetchTransactions();
+}catch (err) {
+    console.error("FETCH ERROR:", err);
+  }
 };
 
 const deleteTransaction = async (id) => {
-  await axios.delete(`https://nanaprojectportfolio.onrender.com/transactions/${id}`, {
+  try{
+  const res = await axios.delete(`https://nanaprojectportfolio.onrender.com/transactions/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
   });
   fetchTransactions();
+}catch (err) {
+    console.error("FETCH ERROR:", err);
+  }
 };
 
 
