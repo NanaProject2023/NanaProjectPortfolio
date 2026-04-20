@@ -97,6 +97,14 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
+
+
+
+
 // ✅ GET TRANSACTIONS
 app.get("/transactions", authenticateToken, async (req, res) => {
   try {
