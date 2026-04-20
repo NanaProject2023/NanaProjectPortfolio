@@ -11,7 +11,9 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: "https://nana-project-portfolio-o795.vercel.app"
+}));
 app.use(express.json());
 
 const pool = new Pool(
