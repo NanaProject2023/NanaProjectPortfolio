@@ -1,4 +1,4 @@
-Personal Finance Tracker
+
 Personal Finance Tracker is a full-stack application designed to help users monitor their finances. Users can log individual financial items by entering a title, price, and toggling between expenses or profits. The app allows users to add, update, and delete entries securely, with full authentication.
 Features
 	•	Add Financial Items: Users input a title, amount, and choose whether it’s an expense or profit.
