@@ -28,6 +28,7 @@ const pool = new Pool(
 );
 
 // ✅ SIGNUP
+/*
 app.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -47,6 +48,30 @@ app.post("/signup", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
+app.post("/signup", async (req, res) => {
+  try {
+    console.log("BODY:", req.body);
+
+    const { email, password } = req.body;
+
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.log("SUPABASE ERROR:", error.message);
+      return res.status(400).json({ error: error.message });
+    }
+
+    res.json(data);
+  } catch (err) {
+    console.error("SIGNUP CRASH:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // ✅ LOGIN
 app.post("/login", async (req, res) => {
