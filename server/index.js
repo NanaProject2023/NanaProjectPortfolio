@@ -2,8 +2,9 @@ import express from "express";
 import cors from "cors";
 import pkg from "pg";
 import dotenv from "dotenv";
-import bcrypt from "bcrypt";
+
 import jwt from "jsonwebtoken";
+import { supabase } from "./supabaseClient";
 
 const { Pool } = pkg;
 
@@ -31,15 +32,16 @@ app.post("/signup", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
 
-    const newUser = await pool.query(
-      "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-      [email, hashedPassword]
-    );
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
 
-    res.json(newUser.rows[0]);
+    res.json(data);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
@@ -51,31 +53,19 @@ app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await pool.query(
-      "SELECT * FROM users WHERE email = $1",
-      [email]
-    );
-
-    if (user.rows.length === 0) {
-      return res.status(400).json({ error: "User not found" });
-    }
-
-    const validPassword = await bcrypt.compare(
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
       password,
-      user.rows[0].password
-    );
+    });
 
-    if (!validPassword) {
-      return res.status(400).json({ error: "Invalid credentials" });
+    if (error) {
+      return res.status(400).json({ error: error.message });
     }
 
-    const token = jwt.sign(
-      { userId: user.rows[0].id },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
-    );
-
-    res.json({ token });
+    res.json({
+      token: data.session.access_token,
+      user: data.user,
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: err.message });
