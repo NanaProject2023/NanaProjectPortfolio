@@ -28,27 +28,6 @@ const pool = new Pool(
 );
 
 // ✅ SIGNUP
-/*
-app.post("/signup", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-    });
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    res.json(data);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-*/
 app.post("/signup", async (req, res) => {
   console.log("BODY:", req.body);
 
@@ -79,31 +58,6 @@ app.post("/signup", async (req, res) => {
 });
 
 // ✅ LOGIN
-/*
-app.post("/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-
-    if (error) {
-      return res.status(400).json({ error: error.message });
-    }
-
-    res.json({
-      token: data.session.access_token,
-      user: data.user,
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
-  }
-});
-*/
-
 app.post("/login", async (req, res) => {
   console.log("LOGIN BODY:", req.body);
 
@@ -135,20 +89,18 @@ app.post("/login", async (req, res) => {
 
 
 // ✅ AUTH MIDDLEWARE
-const authenticateToken = (req, res, next) => {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+const authenticateToken = async (req, res, next) => {
+  const token = req.headers.authorization?.split(" ")[1];
 
   if (!token) return res.sendStatus(401);
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403);
+  const { data, error } = await supabase.auth.getUser(token);
 
-    req.user = user;
-    next();
-  });
+  if (error || !data?.user) return res.sendStatus(403);
+
+  req.user = data.user;
+  next();
 };
-
 
 app.get("/", (req, res) => {
   res.send("API is running, dont forget to delete after testing");
@@ -160,7 +112,7 @@ app.get("/", (req, res) => {
 // ✅ GET TRANSACTIONS
 app.get("/transactions", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const data = await pool.query(
       "SELECT * FROM transactions WHERE user_id = $1",
@@ -178,7 +130,7 @@ app.get("/transactions", authenticateToken, async (req, res) => {
 app.post("/transactions", authenticateToken, async (req, res) => {
   try {
     const { description, amount, type } = req.body;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     const result = await pool.query(
       "INSERT INTO transactions (description, amount, type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -196,7 +148,7 @@ app.post("/transactions", authenticateToken, async (req, res) => {
 app.delete("/transactions/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.userId;
+    const userId = req.user.id;
 
     await pool.query(
       "DELETE FROM transactions WHERE id = $1 AND user_id = $2",
