@@ -142,11 +142,17 @@ app.post("/transactions", authenticateToken, async (req, res) => {
       userId,
     });
 
-    const result = await pool.query(
-      "INSERT INTO transactions (description, amount, type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
-      [description, Number(amount), type, userId]
-    );
-
+  const result = await pool.query(
+  `INSERT INTO transactions (description, amount, type, user_id)
+   VALUES ($1, $2, $3, $4)
+   RETURNING *`,
+  [
+    description,
+    Number(amount),   // 🔥 force numeric
+    type.toLowerCase(),
+    userId
+  ]
+  );
     return res.json(result.rows[0]);
 
   } catch (err) {
