@@ -50,7 +50,7 @@ app.post("/signup", async (req, res) => {
 });
 */
 app.post("/signup", async (req, res) => {
-  console.log("BODY RECEIVED:", req.body);
+  console.log("BODY:", req.body);
 
   const { email, password } = req.body;
 
@@ -65,11 +65,13 @@ app.post("/signup", async (req, res) => {
     });
 
     if (error) {
+      console.log("SUPABASE ERROR:", error.message);
       return res.status(400).json({ error: error.message });
     }
 
-    res.status(200).json(data);
+    res.json(data);
   } catch (err) {
+    console.log("SERVER ERROR:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
