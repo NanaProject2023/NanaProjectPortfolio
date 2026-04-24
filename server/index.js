@@ -79,6 +79,7 @@ app.post("/signup", async (req, res) => {
 });
 
 // ✅ LOGIN
+/*
 app.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -101,6 +102,36 @@ app.post("/login", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+*/
+
+app.post("/login", async (req, res) => {
+  console.log("LOGIN BODY:", req.body);
+
+  try {
+    const { email, password } = req.body;
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      console.log("❌ LOGIN ERROR:", error.message);
+      return res.status(400).json({ error: error.message });
+    }
+
+    console.log("✅ LOGIN SUCCESS");
+
+    return res.json({
+      token: data.session.access_token,
+      user: data.user,
+    });
+  } catch (err) {
+    console.log("🔥 SERVER ERROR:", err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 // ✅ AUTH MIDDLEWARE
 const authenticateToken = (req, res, next) => {
