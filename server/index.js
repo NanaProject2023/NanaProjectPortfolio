@@ -55,6 +55,7 @@ app.post("/signup", async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
+    console.log("❌ Missing fields");
     return res.status(400).json({ error: "Missing email or password" });
   }
 
@@ -65,14 +66,15 @@ app.post("/signup", async (req, res) => {
     });
 
     if (error) {
-      console.log("SUPABASE ERROR:", error.message);
+      console.log("❌ SUPABASE ERROR:", error.message);
       return res.status(400).json({ error: error.message });
     }
 
-    res.status(200).json(data);
+    console.log("✅ SUCCESS:", data);
+    return res.status(200).json(data); // ✅ ONLY ONE RESPONSE
   } catch (err) {
-    console.log("SERVER ERROR:", err.message);
-    res.status(500).json({ error: err.message });
+    console.log("🔥 SERVER ERROR:", err.message);
+    return res.status(500).json({ error: err.message });
   }
 });
 
