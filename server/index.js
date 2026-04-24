@@ -133,14 +133,54 @@ app.post("/transactions", authenticateToken, async (req, res) => {
     console.log("🔥 USER:", req.user);
 
     const { description, amount, type } = req.body;
-    const userId = req.user.id;
+
+    // ✅ basic validation (prevents most 500 errors)
+    if (!description || amount === undefined || !type) {
+      return res.status(400).json({
+        error: "Missing description, amount, or type",
+      });
+    }
+
+    const userId = req.user?.id;
+
+    if (!userId) {
+      return res.status(401).json({ error: "Invalid user token" });
+    }
+
+    const parsedAmount = Number(amount);
+
+    if (isNaN(parsedAmount)) {
+      return res.status(400).json({ error: "Amount must be a number" });
+    }
+
+    const normalizedType = type.toLowerCase();
 
     console.log("🔥 INSERT VALUES:", {
       description,
-      amount,
-      type,
+      parsedAmount,
+      normalizedType,
       userId,
     });
+
+    const result = await pool.query(
+      `INSERT INTO transactions (description, amount, type, user_id)
+       VALUES ($1, $2, $3, $4)
+       RETURNING *`,
+      [description, parsedAmount, normalizedType, userId]
+    );
+
+    return res.status(201).json(result.rows[0]);
+
+  } catch (err) {
+    console.log("🔥 FULL ERROR:", err);
+    console.log("🔥 DETAIL:", err.detail);
+    console.log("🔥 CODE:", err.code);
+
+    return res.status(500).json({
+      error: "Server error while creating transaction",
+    });
+  }
+});
 
   const result = await pool.query(
   `INSERT INTO transactions (description, amount, type, user_id)
