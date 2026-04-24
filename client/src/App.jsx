@@ -33,7 +33,7 @@ const handleAuth = async () => {
     // only login returns token
     if (isLogin) {
       localStorage.setItem("token", res.data.token);
-      setToken(res.data.token);
+      setToken(res.data.token || "");
     } else {
       alert("Signup successful! Please login.");
       setIsLogin(true);
@@ -48,10 +48,15 @@ const handleAuth = async () => {
 
 
   useEffect(() => {
-    if (token){
-    fetchTransactions();
-    }
-  }, [token]);
+  const storedToken = localStorage.getItem("token");
+  if (storedToken) {
+    setToken(storedToken);
+  }
+}, []);
+
+useEffect(() => {
+  if (token) fetchTransactions();
+}, [token]);
 
 const fetchTransactions = async () => {
   try {
@@ -70,6 +75,8 @@ const fetchTransactions = async () => {
 
 const addTransaction = async () => {
   try{
+  console.log("TOKEN:", token); 
+
   const res = await axios.post(
     "https://nanaprojectportfolio.onrender.com/transactions",
     { description, amount, type },
