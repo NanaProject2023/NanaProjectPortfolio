@@ -4,7 +4,7 @@ import pkg from "pg";
 import dotenv from "dotenv";
 
 import jwt from "jsonwebtoken";
-import { supabase } from "./supabaseClient";
+import { supabase } from "./supabaseClient.js";
 
 const { Pool } = pkg;
 
