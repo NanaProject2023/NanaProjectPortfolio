@@ -112,34 +112,42 @@ const authenticateToken = async (req, res, next) => {
 // ✅ GET TRANSACTIONS
 app.get("/transactions", authenticateToken, async (req, res) => {
   try {
-    const userId = req.user.id;
+    console.log("🔥 USER:", req.user);
+
+    const userId = req.user?.id;
+    console.log("🔥 USER ID:", userId);
 
     const data = await pool.query(
       "SELECT * FROM transactions WHERE user_id = $1",
       [userId]
     );
 
-    res.json(data.rows);
+    return res.json(data.rows);
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.log("🔥 GET ERROR FULL:", err);
+    return res.status(500).json({ error: err.message });
   }
 });
 
 // ✅ ADD TRANSACTION
 app.post("/transactions", authenticateToken, async (req, res) => {
   try {
+    console.log("🔥 BODY:", req.body);
+    console.log("🔥 USER:", req.user);
+
     const { description, amount, type } = req.body;
 
     const result = await pool.query(
       `INSERT INTO transactions (description, amount, type, user_id)
        VALUES ($1, $2, $3, $4)
        RETURNING *`,
-      [description, Number(amount), type.toLowerCase(), req.user.id]
+      [description, Number(amount), type.toLowerCase(), req.user?.id]
     );
 
     return res.status(201).json(result.rows[0]);
+
   } catch (err) {
+    console.log("🔥 POST ERROR FULL:", err);
     return res.status(500).json({ error: err.message });
   }
 });
