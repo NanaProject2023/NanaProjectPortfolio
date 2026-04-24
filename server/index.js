@@ -129,21 +129,31 @@ app.get("/transactions", authenticateToken, async (req, res) => {
 // ✅ ADD TRANSACTION
 app.post("/transactions", authenticateToken, async (req, res) => {
   try {
+    console.log("🔥 BODY:", req.body);
+    console.log("🔥 USER:", req.user);
+
     const { description, amount, type } = req.body;
     const userId = req.user.id;
+
+    console.log("🔥 INSERT VALUES:", {
+      description,
+      amount,
+      type,
+      userId,
+    });
 
     const result = await pool.query(
       "INSERT INTO transactions (description, amount, type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
       [description, Number(amount), type, userId]
     );
 
-    res.json(result.rows[0]);
+    return res.json(result.rows[0]);
 
   } catch (err) {
     console.log("🔥 FULL ERROR:", err);
     console.log("🔥 DETAIL:", err.detail);
     console.log("🔥 CODE:", err.code);
-    console.log("🔥 HINT:", err.hint);
+    console.log("🔥 TABLE ERROR:", err.table);
 
     return res.status(500).json({ error: err.message });
   }
