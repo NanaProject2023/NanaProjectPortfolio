@@ -1,12 +1,12 @@
 import express from "express";
 import cors from "cors";
-import pkg from "pg";
+
 import dotenv from "dotenv";
 
 import jwt from "jsonwebtoken";
 import { supabase } from "./supabaseClient.js";
 
-const { Pool } = pkg;
+
 
 dotenv.config();
 
@@ -15,17 +15,6 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-const pool = new Pool(
-  process.env.DATABASE_URL
-    ? { connectionString: process.env.DATABASE_URL }
-    : {
-        user: "postgres",
-        host: "localhost",
-        database: "finance_tracker",
-        password: "1234",
-        port: 5432,
-      }
-);
 
 // ✅ SIGNUP
 app.post("/signup", async (req, res) => {
@@ -112,19 +101,17 @@ const authenticateToken = async (req, res, next) => {
 // ✅ GET TRANSACTIONS
 app.get("/transactions", authenticateToken, async (req, res) => {
   try {
-    console.log("🔥 USER:", req.user);
+    const { data, error } = await supabase
+      .from("transactions")
+      .select("*")
+      .eq("user_id", req.user.id);
 
-    const userId = req.user?.id;
-    console.log("🔥 USER ID:", userId);
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
 
-    const data = await pool.query(
-      "SELECT * FROM transactions WHERE user_id = $1",
-      [userId]
-    );
-
-    return res.json(data.rows);
+    return res.json(data);
   } catch (err) {
-    console.log("🔥 GET ERROR FULL:", err);
     return res.status(500).json({ error: err.message });
   }
 });
@@ -132,22 +119,26 @@ app.get("/transactions", authenticateToken, async (req, res) => {
 // ✅ ADD TRANSACTION
 app.post("/transactions", authenticateToken, async (req, res) => {
   try {
-    console.log("🔥 BODY:", req.body);
-    console.log("🔥 USER:", req.user);
-
     const { description, amount, type } = req.body;
 
-    const result = await pool.query(
-      `INSERT INTO transactions (description, amount, type, user_id)
-       VALUES ($1, $2, $3, $4)
-       RETURNING *`,
-      [description, Number(amount), type.toLowerCase(), req.user?.id]
-    );
+    const { data, error } = await supabase
+      .from("transactions")
+      .insert([
+        {
+          description,
+          amount,
+          type,
+          user_id: req.user.id,
+        },
+      ])
+      .select();
 
-    return res.status(201).json(result.rows[0]);
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
 
+    return res.status(201).json(data[0]);
   } catch (err) {
-    console.log("🔥 POST ERROR FULL:", err);
     return res.status(500).json({ error: err.message });
   }
 });
@@ -156,17 +147,24 @@ app.post("/transactions", authenticateToken, async (req, res) => {
 app.delete("/transactions/:id", authenticateToken, async (req, res) => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
 
-    await pool.query(
-      "DELETE FROM transactions WHERE id = $1 AND user_id = $2",
-      [id, userId]
-    );
+    const { data, error } = await supabase
+      .from("transactions")
+      .delete()
+      .eq("id", id)
+      .eq("user_id", req.user.id)
+      .select();
 
-    res.json({ message: "Deleted" });
+    if (error) {
+      return res.status(400).json({ error: error.message });
+    }
+
+    return res.json({
+      message: "Deleted successfully",
+      deleted: data,
+    });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    return res.status(500).json({ error: err.message });
   }
 });
 
