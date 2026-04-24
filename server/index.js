@@ -133,7 +133,7 @@ app.post("/transactions", authenticateToken, async (req, res) => {
     const userId = req.user.id;
 
     const result = await pool.query(
-      "INSERT INTO transactions (description, amount, type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      "INSERT INTO transactions (description, Number(amount), type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
       [description, amount, type, userId]
     );
 
