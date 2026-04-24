@@ -133,14 +133,19 @@ app.post("/transactions", authenticateToken, async (req, res) => {
     const userId = req.user.id;
 
     const result = await pool.query(
-      "INSERT INTO transactions (description, Number(amount), type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
-      [description, amount, type, userId]
+      "INSERT INTO transactions (description, amount, type, user_id) VALUES ($1, $2, $3, $4) RETURNING *",
+      [description, Number(amount), type, userId]
     );
 
     res.json(result.rows[0]);
+
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: err.message });
+    console.log("🔥 FULL ERROR:", err);
+    console.log("🔥 DETAIL:", err.detail);
+    console.log("🔥 CODE:", err.code);
+    console.log("🔥 HINT:", err.hint);
+
+    return res.status(500).json({ error: err.message });
   }
 });
 
