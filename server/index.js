@@ -50,24 +50,26 @@ app.post("/signup", async (req, res) => {
 });
 */
 app.post("/signup", async (req, res) => {
+  console.log("BODY RECEIVED:", req.body);
+
+  const { email, password } = req.body;
+
+  if (!email || !password) {
+    return res.status(400).json({ error: "Missing email or password" });
+  }
+
   try {
-    console.log("BODY:", req.body);
-
-    const { email, password } = req.body;
-
     const { data, error } = await supabase.auth.signUp({
       email,
       password,
     });
 
     if (error) {
-      console.log("SUPABASE ERROR:", error.message);
       return res.status(400).json({ error: error.message });
     }
 
-    res.json(data);
+    res.status(200).json(data);
   } catch (err) {
-    console.error("SIGNUP CRASH:", err);
     res.status(500).json({ error: err.message });
   }
 });
