@@ -90,22 +90,22 @@ app.post("/login", async (req, res) => {
 
 // ✅ AUTH MIDDLEWARE
 const authenticateToken = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
 
-  if (!token) return res.sendStatus(401);
+    if (!token) return res.sendStatus(401);
 
-  const { data, error } = await supabase.auth.getUser(token);
+    const { data, error } = await supabase.auth.getUser(token);
 
-  if (error || !data?.user) return res.sendStatus(403);
+    if (error || !data?.user) return res.sendStatus(403);
 
-  req.user = data.user;
-  next();
+    req.user = data.user;
+    next();
+  } catch (err) {
+    console.log("AUTH ERROR:", err.message);
+    return res.sendStatus(500);
+  }
 };
-
-app.get("/", (req, res) => {
-  res.send("API is running, dont forget to delete after testing");
-});
-
 
 
 
